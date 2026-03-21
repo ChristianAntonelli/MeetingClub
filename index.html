@@ -7,6 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Barlow+Condensed:wght@500;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Preload critical hero image for each breakpoint -->
+  <link rel="preload" as="image" href="assets/mobilebackground.png" media="(max-width: 720px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/locationmeeting.png"  media="(min-width: 1280px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/heroimage.png"        media="(min-width: 721px) and (max-width: 1279px)" fetchpriority="high">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -286,6 +290,8 @@
     /* Default: show athlete image (mobile/tablet), location image hidden */
     .hero-img-desktop { display: none; }
     .hero-img-mobile  { display: block; }
+    /* Mobile-only full-bleed background image (hidden on tablet/desktop) */
+    .hero-mob-bg { display: none; }
 
     /* Zone rings SVG — visible only on tablet, hidden on desktop and mobile */
     .hero-zone-rings {
@@ -909,25 +915,37 @@
       }
     }
     @media (max-width: 720px) {
-      /* ── Mobile hero: full background image, text in the sky ── */
+      /* ── Mobile hero: img IN flow → section height = image natural height (no zoom, no crop)
+            hero-inner absolute on top → text sits in the sky at any screen size ── */
       .hero {
         background-color: #050508;
-        background-image: url('assets/mobilebackground.png');
-        background-repeat: no-repeat;
-        background-position: top center;
-        background-size: cover;
+        background-image: none;
+        position: relative;
         min-height: 0;
-        overflow: hidden;
+        overflow: visible;
       }
-      .hero-fade   { display: none; }
-      .hero-vectors { display: none; }
-      .hero-image-zone { display: none; }
-      /* Text sits in the sky — padding-bottom makes section tall enough that
-         the image (anchored at bottom) shows sky at text level */
+      /* Image is in-flow: its height drives the section height proportionally */
+      .hero-mob-bg {
+        display: block;
+        width: 100%;
+        height: auto;
+        position: relative;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .hero-fade        { display: none; }
+      .hero-vectors     { display: none; }
+      .hero-image-zone  { display: none; }
+      /* Text floats over the image; padding-top in vw scales with image width
+         so the text is always in the sky regardless of device size */
       .hero-inner {
-        padding: 106px 24px 90vw 24px;
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        z-index: 2;
+        padding: 25vw 6vw 0 6vw;
         gap: 18px;
-        justify-content: flex-start;
+        display: flex;
+        flex-direction: column;
         align-items: center;
         text-align: center;
       }
@@ -1368,6 +1386,9 @@
   <!-- HERO -->
   <section class="hero">
 
+    <!-- Mobile background img — in document flow so section height = image height (no zoom, no crop) -->
+    <img src="assets/mobilebackground.png" class="hero-mob-bg" alt="" fetchpriority="high" decoding="async">
+
     <!-- Decorative SVG vectors — adapted for horizontal image zone -->
     <svg class="hero-vectors" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <!-- Large outer ellipse — yellow -->
@@ -1403,7 +1424,7 @@
     <div class="hero-inner">
       <div class="hero-content">
         <p class="hero-eyebrow">44 anni di esperienza pronti per sostenerti</p>
-        <h1 class="hero-title">Fitness ed esperienza,<br/>con il sorriso, dal 1981.</h1>
+        <h1 class="hero-title">Fitness ed esperienza,<br/>con il sorriso dal <span style="color:var(--pink)">1984</span>.</h1>
         <p class="hero-sub">A Pescia, finalmente una palestra davvero <strong>per tutti.</strong></p>
         <div class="hero-btns">
           <a href="#" class="btn-yellow-hero">Prova Gratuita<span class="btn-shimmer"></span></a>
