@@ -956,7 +956,58 @@
       }
       .hero-title { font-size: 2.45rem; max-width: 500px; }
       .hero-content { display: flex; flex-direction: column; align-items: center; }
-      .btn-pink-hero, .btn-yellow-hero { padding: 14px 28px; font-size: 0.85rem; }
+      /* CTA buttons — black bg, colored text, static gradient border */
+      .btn-pink-hero,
+      .btn-yellow-hero {
+        padding: 14px 28px;
+        font-size: 0.85rem;
+        background: #000;
+        overflow: visible;    /* allow ::before border to render outside */
+        isolation: isolate;
+      }
+      .btn-pink-hero   { color: var(--pink); }
+      .btn-yellow-hero { color: var(--yellow); }
+      .btn-pink-hero:hover, .btn-yellow-hero:hover { background: rgba(0,0,0,0.85); }
+      .btn-shimmer { display: none; } /* shimmer needs overflow:hidden — disabled on mobile */
+      /* Static gradient border — same mask technique as pre-headline, no animation */
+      .btn-pink-hero::before,
+      .btn-yellow-hero::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        border-radius: 4px;
+        padding: 2px;
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        pointer-events: none;
+        z-index: -1;
+      }
+      .btn-pink-hero::before {
+        background: conic-gradient(
+          from 0deg,
+          rgba(232,23,93,0.35) 0deg,
+          rgba(255,100,145,1)  90deg,
+          rgba(232,23,93,0.35) 180deg,
+          rgba(255,60,110,0.9) 270deg,
+          rgba(232,23,93,0.35) 360deg
+        );
+      }
+      .btn-yellow-hero::before {
+        background: conic-gradient(
+          from 0deg,
+          rgba(245,168,0,0.35) 0deg,
+          rgba(255,215,60,1)   90deg,
+          rgba(245,168,0,0.35) 180deg,
+          rgba(255,200,40,0.9) 270deg,
+          rgba(245,168,0,0.35) 360deg
+        );
+      }
       .stat-tag { display: none; }
       /* Pre-headline pill — dark container + animated border */
       .hero-eyebrow {
@@ -1015,7 +1066,7 @@
       }
     }
     @media (max-width: 480px) {
-      .hero-inner { padding: 100px 20px 50px 20px; gap: 40px; }
+      .hero-inner { padding: 21vw 5vw 0 5vw; gap: 14px; }
       .hero-title { font-size: 2.1rem; max-width: 380px; }
       .btn-pink-hero, .btn-yellow-hero { padding: 11px 16px; font-size: 0.72rem; letter-spacing: 0.1em; }
       .hero-btns { gap: 10px; }
